@@ -36,3 +36,6 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+# Test data
+./src/main/resources/random_currency_data.csv
