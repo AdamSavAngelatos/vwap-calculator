@@ -38,4 +38,4 @@ build/
 .DS_Store
 
 # Test data
-./src/main/resources/random_currency_data.csv
+src/main/resources/random_currency_data.csv
