@@ -1,7 +1,6 @@
 import pandas as pd
-import numpy as np
-from datetime import datetime, timedelta
 import random
+from datetime import datetime, timedelta
 
 # AI-generated script to programmatically generate test data in csv format. Useful for generating large sample sets of data
 # to test performance of application.

@@ -9,6 +9,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Provides static methods to map trade data from different file types into Trade objects
@@ -56,7 +57,9 @@ public class FileReader {
             // Skip the header
             br.readLine();
         }
+        AtomicInteger totalLines = new AtomicInteger();
         br.lines().parallel().forEach(line -> {
+            totalLines.getAndIncrement();
             String[] csvValues = line.split(recordSeparator);
 
             if (csvValues.length != 4) {
@@ -92,7 +95,8 @@ public class FileReader {
 
         long endTime = System.nanoTime();
         long totalTime = endTime - startTime;
-        System.out.println("Successfully read from " + filepath + " Total runtime: " + totalTime / 1000000 + " milliseconds");
+        System.out.println("Successfully converted " + totalLines + " csv entries into " + trades.size() +
+                " Trade objects from " + filepath + " Total runtime: " + totalTime / 1000000 + " milliseconds");
         return trades;
     }
 
