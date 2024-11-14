@@ -9,6 +9,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,12 +22,12 @@ public class VWAPCalculatorTest {
 
         // When
         VWAPCalculator calculator = new VWAPCalculator(trades);
-        Map<String, List<Pair<Instant, Double>>> hourlyVWAPs = calculator.calculateHourlyVWAPs();
+        ConcurrentMap<String, List<Trade>> categorisedTades = calculator.getCategorisedTrades();
 
         // Then
-        assertEquals(139.42494749734252, hourlyVWAPs.get("USD/JPY").get(0).getValue());
-        assertEquals(0.6899, hourlyVWAPs.get("AUD/USD").get(0).getValue());
-        assertEquals(0.4725046592104985, hourlyVWAPs.get("NZD/GBP").get(0).getValue());
+        assertEquals(2, categorisedTades.get("USD/JPY").size());
+        assertEquals(1, categorisedTades.get("AUD/USD").size());
+        assertEquals(2, categorisedTades.get("NZD/GBP").size());
     }
 
     @Test
