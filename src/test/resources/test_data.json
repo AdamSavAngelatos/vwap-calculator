@@ -1,0 +1,32 @@
+[
+  {
+    "timestamp": "2024-10-24T10:15:30.00Z",
+    "currencyPair": "USD/JPY",
+    "price": 142.497,
+    "volume": 30995
+  },
+  {
+    "timestamp": "2024-10-24T10:15:31.00Z",
+    "currencyPair": "USD/JPY",
+    "price": 139.392,
+    "volume": 2890000
+  },
+  {
+    "timestamp": "2024-10-24T10:15:32.00Z",
+    "currencyPair": "AUD/USD",
+    "price": 0.6899,
+    "volume": 444134
+  },
+  {
+    "timestamp": "2024-10-24T10:15:33.00Z",
+    "currencyPair": "NZD/GBP",
+    "price": 0.4731,
+    "volume": 64380
+  },
+  {
+    "timestamp": "2024-10-24T10:15:34.00Z",
+    "currencyPair": "NZD/GBP",
+    "price": 0.4725,
+    "volume": 8226295
+  }
+]

@@ -3,6 +3,14 @@ import numpy as np
 from datetime import datetime, timedelta
 import random
 
+# AI-generated script to programmatically generate test data in csv format. Useful for generating large sample sets of data
+# to test performance of application.
+
+# To run, first install pandas -> pip install pandas
+# Then run the script -> python .\generate_test_data.py (takes a few mins, depending on the num_rows)
+# By default, it will create the csv file in the same directory as the script with 1 million rows
+
+
 # Parameters
 num_rows = 10000000
 start_time = datetime(2024, 10, 20, 10, 0, 0)

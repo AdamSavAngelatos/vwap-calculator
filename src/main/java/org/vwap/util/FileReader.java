@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * This class provides static methods to map trade data from different file types into Trade objects
+ * Provides static methods to map trade data from different file types into Trade objects
  */
 public class FileReader {
 
@@ -19,64 +19,97 @@ public class FileReader {
         throw new IllegalStateException("Utility class");
     }
 
-    public static List<Trade> readFromCSVFile(String filepath, String lineSeparator, boolean skipFirstLine) {
+    /**
+     * Converts trade data from a CSV file into Trade objects
+     * <p>
+     * Expects CSV entries to follow the format TIMESTAMP,CURRENCY_PAIR,PRICE,VOLUME
+     * </p
+     * <p>
+     * NOTE: File read is multithreaded to improve performance - the returned list will not be sequential
+     * </p>
+     *
+     * @param filepath        Path to the csv file to read
+     * @param recordSeparator Character that separates entries in the provided csv file
+     * @param containsHeader  Whether the csv file contains a header
+     * @return A list of Trade objects
+     * @throws IOException If unable to create an InputStream from filepath
+     */
+    public static List<Trade> readFromCSVFile(String filepath, String recordSeparator, boolean containsHeader)
+            throws IOException {
         long startTime = System.nanoTime();
         if (filepath.isEmpty()) {
             throw new IllegalArgumentException("File path cannot be empty");
         }
-        if (lineSeparator.isEmpty()) {
+        if (recordSeparator.isEmpty()) {
             throw new IllegalArgumentException("Line separator cannot be empty");
         }
 
+        // Need to create a synchronized list to handle parallel writes
         List<Trade> trades = Collections.synchronizedList(new ArrayList<>());
 
-        try {
-            File initialFile = new File(filepath);
-            InputStream inputStream = Files.newInputStream(initialFile.toPath());
+        System.out.println("Reading from: " + filepath);
+        File initialFile = new File(filepath);
+        InputStream inputStream = Files.newInputStream(initialFile.toPath());
 
-            BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
-            if (skipFirstLine) {
-                br.readLine();
-            }
-            br.lines().parallel().forEach(line -> {
-                String[] csvValues = line.split(lineSeparator);
-
-                if (csvValues.length != 4) {
-                    System.err.println("Invalid CSV entry, should contain 4 data points: " + line);
-                } else {
-                    Instant timestamp = null;
-                    String currencyPair;
-                    float price = 0;
-                    int volume = 0;
-
-                    try {
-                        timestamp = Instant.parse(csvValues[0]);
-                    } catch (DateTimeParseException e) {
-                        System.err.println("Invalid timestamp: " + csvValues[0]);
-                    }
-
-                    currencyPair = csvValues[1];
-
-                    try {
-                        price = Float.parseFloat(csvValues[2]);
-                    } catch (NumberFormatException e) {
-                        System.err.println("Invalid price: " + csvValues[2]);
-                    }
-                    try {
-                        volume = Integer.parseInt(csvValues[3]);
-                    } catch (NumberFormatException e) {
-                        System.err.println("Invalid volume: " + csvValues[3]);
-                    }
-
-                    trades.add(new Trade(timestamp, currencyPair, price, volume));
-                }
-            });
-        } catch (IOException e) {
-            System.err.println("Error reading file: " + filepath);
+        BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+        if (containsHeader) {
+            // Skip the header
+            br.readLine();
         }
+        br.lines().parallel().forEach(line -> {
+            String[] csvValues = line.split(recordSeparator);
+
+            if (csvValues.length != 4) {
+                System.err.println("Invalid CSV entry, should contain 4 data points: " + line);
+            } else {
+                Instant timestamp = null;
+                String currencyPair;
+                double price = 0;
+                int volume = 0;
+
+                try {
+                    timestamp = Instant.parse(csvValues[0]);
+                } catch (DateTimeParseException e) {
+                    System.err.println("Invalid timestamp: " + csvValues[0]);
+                }
+
+                currencyPair = csvValues[1];
+
+                try {
+                    price = Double.parseDouble(csvValues[2]);
+                } catch (NumberFormatException e) {
+                    System.err.println("Invalid price: " + csvValues[2]);
+                }
+                try {
+                    volume = Integer.parseInt(csvValues[3]);
+                } catch (NumberFormatException e) {
+                    System.err.println("Invalid volume: " + csvValues[3]);
+                }
+
+                trades.add(new Trade(timestamp, currencyPair, price, volume));
+            }
+        });
+
         long endTime = System.nanoTime();
         long totalTime = endTime - startTime;
         System.out.println("Successfully read from " + filepath + " Total runtime: " + totalTime / 1000000 + " milliseconds");
         return trades;
+    }
+
+    /**
+     * Converts trade data from a JSON file into Trade objects
+     * <p>
+     * NOTE: Method implementation still in progress
+     * </p>
+     *
+     * @param filepath Path to the JSON file to read
+     * @return A list of Trade objects
+     */
+    public static List<Trade> readFromJSONFile(String filepath) {
+        List<Trade> result = new ArrayList<>();
+
+        // TODO: Implement logic
+
+        return result;
     }
 }
